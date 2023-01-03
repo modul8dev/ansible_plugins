@@ -5,7 +5,7 @@ Collection of cool ansible plugins
 Ansible filter plugin for generating env variables from the HashiCorp vault.
 This plugin will allow you to link multiple key's between services and use hashicorp vault as a central place for storing all env variables. More details in this article [...]
 
-## generate-from-aws-vault
+## generate-from-aws-secret
 Ansible filter plugin for generating env variables from the AWS Secret service.
 This plugin will allow you to link multiple key's between services and use aws secret as a central place for storing all env variables.
 
