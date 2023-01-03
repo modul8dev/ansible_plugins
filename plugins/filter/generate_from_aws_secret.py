@@ -5,6 +5,7 @@ __metaclass__ = type
 
 import boto3
 import json
+import os
 import re
 import base64
 
@@ -31,7 +32,8 @@ DOCUMENTATION = """
 
 
 def pull_secret(path, key):
-    client = boto3.client('secretsmanager')
+    aws_region = os.getenv('AWS_REGION')
+    client = boto3.client('secretsmanager', region_name=aws_region)
     response = client.get_secret_value(SecretId=path)
     secret = json.loads(response['SecretString'])
     return secret[key]
