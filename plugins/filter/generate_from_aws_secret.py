@@ -5,7 +5,6 @@ __metaclass__ = type
 
 import boto3
 import json
-import os
 import re
 import base64
 

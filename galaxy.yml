@@ -2,7 +2,7 @@
 # The namespace of the collection. This can be a company/brand/organization or product namespace under which all
 # content lives. May only contain alphanumeric lowercase characters and underscores. Namespaces cannot start with
 # underscores or numbers and cannot contain consecutive underscores
-namespace: modul8dev
+namespace: modul8devops
 
 # The name of the collection. Has the same character restrictions as 'namespace'
 name: plugins
@@ -42,16 +42,16 @@ tags: ["modul8","devops","vault"]
 dependencies: {"community.hashi_vault": ">=0.11.2", "amazon.aws": ">=5.1.0"}
 
 # The URL of the originating SCM repository
-repository: https://github.com/modul8dev/ansible-plugins
+repository: https://github.com/modul8dev/ansible_plugins
 
 # The URL to any online docs
-documentation: https://github.com/modul8dev/ansible-plugins/blob/master/README.md
+documentation: https://github.com/modul8dev/ansible_plugins/blob/master/README.md
 
 # The URL to the homepage of the collection/project
 homepage: https://modul8.dev
 
 # The URL to the collection issue tracker
-issues: https://github.com/modul8dev/ansible-plugins/issues
+issues: https://github.com/modul8dev/ansible_plugins/issues
 
 # A list of file glob-like patterns used to filter any files or directories that should not be included in the build
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
