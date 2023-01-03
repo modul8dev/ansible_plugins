@@ -39,7 +39,7 @@ tags: ["modul8","devops","vault"]
 # collection label 'namespace.name'. The value is a version range
 # L(specifiers,https://python-semanticversion.readthedocs.io/en/latest/#requirement-specification). Multiple version
 # range specifiers can be set and are separated by ','
-dependencies: {"community.hashi_vault": ">=0.11.2", "amazon.aws": ">=5.1.0"}
+dependencies: {"community.hashi_vault": ">=0.11.2", "amazon.aws": ">=4.3.0"}
 
 # The URL of the originating SCM repository
 repository: https://github.com/modul8dev/ansible_plugins
