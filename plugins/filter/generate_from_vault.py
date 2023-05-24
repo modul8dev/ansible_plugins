@@ -59,14 +59,11 @@ class FilterModule(object):
         
 
     def generate_from_vault(self, vars, type):
-        dict = {}
+        result = {}
         vault_regex = r"vault_path:.[a-zA-Z0-9_\/ ]*"
         asm_regex = r"asm_path:.[a-zA-Z0-9_\/ ]*"
     
-        for k, v in vars.items():
-            if type == "secret":
-                v = encode(v)
-    
+        for k, v in vars.items():   
             vault_match = re.findall(vault_regex, v)
             asm_match = re.findall(asm_regex, v)
     
@@ -75,14 +72,25 @@ class FilterModule(object):
                     var = re.split(":| ", m)
                     s = pull_vault_secret(var[1], var[2])
                     v = re.sub(vault_regex, s, v, 1)
-                dict[k] = v
-            elif asm_match:
+                if type == "secret":
+                    v = encode(v)
+                result[k] = v
+            else:
+                if type == "secret":
+                    v = encode(v)
+                result[k] = v
+
+            if asm_match:
                 for m in asm_match:
                     var = re.split(":| ", m)
                     s = pull_asm_secret(var[1], var[2])
                     v = re.sub(asm_regex, s, v, 1)
-                dict[k] = v
+                if type == "secret":
+                    v = encode(v)
+                result[k] = v
             else:
-                dict[k] = v
-    
-        return dict
+                if type == "secret":
+                    v = encode(v)
+                result[k] = v
+                
+        return result
