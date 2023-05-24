@@ -33,14 +33,14 @@ DOCUMENTATION = """
 
 
 def pull_vault_secret(path, key, namespace='admin'):
-    vault_url = os.getenv('VAULT_ADDR', "eu-central-1")
+    vault_url = os.getenv('VAULT_ADDR')
     client = hvac.Client(url=vault_url, namespace=namespace)
     secret = client.read(path)['data']
     return secret['data'][f'{key}']
 
 
 def pull_asm_secret(path, key):
-    aws_region = os.getenv('AWS_REGION')
+    aws_region = os.getenv('AWS_REGION', "eu-central-1")
     client = boto3.client('secretsmanager', region_name=aws_region)
     response = client.get_secret_value(SecretId=path)
     secret = json.loads(response['SecretString'])
