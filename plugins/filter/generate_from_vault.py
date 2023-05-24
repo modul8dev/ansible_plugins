@@ -75,11 +75,11 @@ class FilterModule(object):
                 for m in vault_match:
                     var = re.split(":| ", m)
                     s = pull_vault_secret(var[1], var[2])
-                    v = re.sub(vault_regex, s, v)
+                    v = re.sub(vault_regex, s, v, 1)
                 for m in asm_match:
                     var = re.split(":| ", m)
                     s = pull_asm_secret(var[1], var[2])
-                    v = re.sub(asm_regex, s, v)
+                    v = re.sub(asm_regex, s, v, 1)
                 if type == "secret":
                     v = encode(v)
                 result[k] = v
