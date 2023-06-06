@@ -12,8 +12,8 @@ import base64
 
 DOCUMENTATION = """
     lookup: generate_from_vault
-    author: Zdravko Posloncec <z.posloncec@gmail.com>
-    version_added: '1.1.7'
+    author: Zdravko Posloncec <info@modul8.dev>
+    version_added: '1.2.0'
     short_description: generate config_map and/or secret variables from HashiCorp Vault/AWS Secret Manager
     description:
         - This filter parses the variables from Hashicorp Vault and map the values pointed to different vault key's with original values
@@ -38,13 +38,33 @@ def pull_vault_secret(path, key, namespace='admin'):
     secret = client.read(path)['data']
     return secret['data'][f'{key}']
 
+def has_child_json(data):
+    for value in data.values():
+        if isinstance(value, dict):
+            return True
+    return False
 
-def pull_asm_secret(path, key):
+def get_value_by_key(data, key):
+    if key in data:
+        return data[key]
+    for value in data.values():
+        if isinstance(value, dict):
+            result = get_value_by_key(value, key)
+            if result is not None:
+                return result
+    return None
+
+
+def pull_asm_secret(path, key, prefix=""):
     aws_region = os.getenv('AWS_REGION', "eu-central-1")
     client = boto3.client('secretsmanager', region_name=aws_region)
     response = client.get_secret_value(SecretId=path)
     secret = json.loads(response['SecretString'])
-    return secret[key]
+    if has_child_json(secret):
+        secret = get_value_by_key(secret, key)
+        return secret[prefix]
+    else:
+        return secret[key]
 
 def encode(secret):
     message_bytes = secret.encode('ascii')
@@ -60,8 +80,8 @@ class FilterModule(object):
 
     def generate_from_vault(self, vars, type):
         result = {}
-        vault_regex = r"vault_path:.[a-zA-Z0-9_\/ ]*"
-        asm_regex = r"asm_path:.[a-zA-Z0-9_\/ ]*"
+        vault_regex = r"vault_path:.[a-zA-Z0-9_/\- ]*"
+        asm_regex = r"asm_path:.[a-zA-Z0-9_/\- ]*"
     
         for k, v in vars.items():   
             vault_match = re.findall(vault_regex, v)
@@ -73,12 +93,16 @@ class FilterModule(object):
                 result[k] = v
             else:
                 for m in vault_match:
-                    var = re.split(":| ", m)
+                    var = re.split(r'[:, ]', m)
                     s = pull_vault_secret(var[1], var[2])
                     v = re.sub(vault_regex, s, v, 1)
                 for m in asm_match:
-                    var = re.split(":| ", m)
-                    s = pull_asm_secret(var[1], var[2])
+                    var = re.split(r'[:, ]', m)
+                    var_length = len(var)
+                    if var_length > 3:
+                        s = pull_asm_secret(var[1], var[2], var[3])
+                    else:
+                        s = pull_asm_secret(var[1], var[2])
                     v = re.sub(asm_regex, s, v, 1)
                 if type == "secret":
                     v = encode(v)
